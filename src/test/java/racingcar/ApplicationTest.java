@@ -25,24 +25,29 @@ class ApplicationTest extends NsTest {
     }
 
     @Test
-    void 기능_테스트_자동차_이름_중간에_공백_처리() {
+    void 기능_테스트_우승자_여러명() {
         assertRandomNumberInRangeTest(
                 () -> {
-                    run("pobi,,woni", "1");
-                    assertThat(output()).contains("pobi : -", "woni : ", "최종 우승자 : pobi");
+                    run("pobi,woni", "1");
+                    assertThat(output()).contains("pobi : -", "woni : -", "최종 우승자 : pobi, woni");
                 },
-                MOVING_FORWARD, STOP
+                MOVING_FORWARD, MOVING_FORWARD
         );
     }
 
     @Test
-    void 기능_테스트_이동횟수_중간에_공백_처리() {
-        assertRandomNumberInRangeTest(
-                () -> {
-                    run("pobi,,woni", " 1");
-                    assertThat(output()).contains("pobi : -", "woni : ", "최종 우승자 : pobi");
-                },
-                MOVING_FORWARD, STOP
+    void 예외_테스트_자동차_이름_미입력() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("", " 1"))
+                        .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
+    void 예외_테스트_이동횟수_중간에_공백_처리() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("pobi, woni", " 1"))
+                        .isInstanceOf(IllegalArgumentException.class)
         );
     }
 
@@ -51,6 +56,14 @@ class ApplicationTest extends NsTest {
         assertSimpleTest(() ->
             assertThatThrownBy(() -> runException("pobi,javaji", "1"))
                 .isInstanceOf(IllegalArgumentException.class)
+        );
+    }
+
+    @Test
+    void 예외_테스트_자동차_이름_중간에_공백() {
+        assertSimpleTest(() ->
+                assertThatThrownBy(() -> runException("pobi,,woni", "1"))
+                        .isInstanceOf(IllegalArgumentException.class)
         );
     }
 
@@ -73,7 +86,7 @@ class ApplicationTest extends NsTest {
     @Test
     void 예외_테스트_이동횟수_미입력_공백() {
         assertSimpleTest(() ->
-                assertThatThrownBy(() -> runException("pobi,woni", ""))
+                assertThatThrownBy(() -> runException("o", null))
                         .isInstanceOf(IllegalArgumentException.class)
         );
     }
